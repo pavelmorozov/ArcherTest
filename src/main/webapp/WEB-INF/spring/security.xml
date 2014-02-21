@@ -8,26 +8,35 @@
            
 	<!-- Spring security -->
 	<http>
-  		<intercept-url pattern="/**" access="ROLE_USER" />
-  		<form-login />
-  		<logout />
+		<session-management>
+	        <concurrency-control max-sessions="1" />
+	    </session-management>
+	    
+		<intercept-url pattern="/login" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+		<intercept-url pattern="/register" access="IS_AUTHENTICATED_ANONYMOUSLY"/>	    
+  		<intercept-url pattern="/**" access="ROLE_USER, ROLE_ADMIN" />
+  		
+		<form-login
+			login-page="/login" default-target-url="/login" 
+			authentication-failure-url="/login?error=true"
+			authentication-success-handler-ref="roleAuthenticationSuccessHandler" />  
+					
+  		<logout
+  			logout-url="/logout" 
+  			logout-success-url="/login" />
 	</http>
-
-
-
-
-
-
-
-
-
-
+	
+	 <beans:bean id="roleAuthenticationSuccessHandler"
+        class="dp.ua.pavelmorozov.archertest.services.RoleAuthenticationSuccessHandler" />
 
 	<authentication-manager>
 		<!-- <authentication-provider user-service-ref='testUserDetailsService'/> -->
 		<authentication-provider user-service-ref='testUserDetailsService'/>
+		<authentication-provider user-service-ref='DAOUserDetailsService'>
+			<password-encoder hash="md5"/>
+		</authentication-provider>
 		<authentication-provider>
-		<password-encoder hash="md5"/>
+			<password-encoder hash="md5"/>
 			<user-service>
 				<user name="admin" password="21232f297a57a5a743894a0e4a801fc3" authorities="ROLE_USER, ROLE_ADMIN" />
 				<user name="user" password="ee11cbb19052e40b07aac0ca060c23ee" authorities="ROLE_USER" />

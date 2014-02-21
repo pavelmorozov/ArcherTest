@@ -21,8 +21,7 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<context:component-scan base-package="dp.ua.pavelmorozov" />
-	
+	<context:component-scan base-package="dp.ua.pavelmorozov.archertest.controllers" />
 	
 	
 </beans:beans>
