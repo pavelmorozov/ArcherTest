@@ -9,6 +9,8 @@ public interface UserDAO {
 		throws DataAccessException;
 	public User getUser(String email)
 		throws DataAccessException; 
+	public User getUser(Integer id)
+			throws DataAccessException;
 	public void removeUser(User user)
 		throws DataAccessException;
 	public List <User> listUser()

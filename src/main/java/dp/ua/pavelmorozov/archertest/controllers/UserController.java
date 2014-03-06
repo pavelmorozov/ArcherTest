@@ -18,11 +18,6 @@ import dp.ua.pavelmorozov.archertest.services.UserService;
 
 @Controller
 public class UserController {
-	@RequestMapping("/testUserController")
-	public String testUserController(){
-		return "testUserController";
-	}
-	
     @Autowired
     private UserService userService;	
 	

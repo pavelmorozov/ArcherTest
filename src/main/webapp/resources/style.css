@@ -1,0 +1,29 @@
+#fillUserAccountPopUp{
+	display:none;
+	position:absolute;
+	left: center;
+    top: center;
+    background:  #ffffff;
+    border: 2px solid #999999;
+    padding: 5px;
+    width: 300px;
+    height:135px;
+    box-shadow: 10px 10px 5px rgba(150, 150, 150, 1);
+}
+
+#fillUserAccountPopUpHead{
+  background: #DDDDDD;
+}
+
+#fillUserAccountPopUpHead a{
+    position: absolute;
+    right: 8px;	
+}
+
+.formError{
+	color: #FF7777;
+}
+
+.userName{
+	display:block;
+}
