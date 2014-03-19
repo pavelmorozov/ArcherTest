@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 
 
 
+
 //import dp.ua.pavelmorozov.archertest.domain.Account;
 import dp.ua.pavelmorozov.archertest.domain.User;
 
@@ -22,6 +23,17 @@ public class UserDAOImpl implements UserDAO {
 	private SessionFactory sessionFactory;
 	
 	@Override
+	public List<User> searchUser(String searchString) throws DataAccessException {
+		List<User> userList = sessionFactory.getCurrentSession().
+				createCriteria(User.class).
+				add(Restrictions.ilike("email","%"+searchString+"%")).list();
+		
+		//System.out.println("%"+searchString+"%");
+		return userList;
+	}
+	
+	
+	@Override
 	public void saveUser(User user) throws DataAccessException {
 		sessionFactory.getCurrentSession().save(user);
 	}
@@ -31,8 +43,8 @@ public class UserDAOImpl implements UserDAO {
 		//return user by criteria
 		User user = (User) sessionFactory.getCurrentSession().
 				createCriteria(User.class).
-				add(Restrictions.eq("email",email)).list().get(0);		
-		return user;
+				add(Restrictions.eq("email",email)).list().get(0);
+			return user;
 	}
 	
 	@Override

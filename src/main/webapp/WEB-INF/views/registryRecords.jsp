@@ -14,21 +14,27 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script src="resources/script.js"></script>
 			
-<title>Archer. Управление балансами</title>
+<title>Archer. Журнал пополнений</title>
 </head>
 <body>
-	<h1>Управление балансами пользователей</h1><br>
-	
-	<a href= "<c:url value="/registryRecords"/> ">Журнал пополнений</a>
-	<form method="POST" action="<c:url value="/searchUser" />">
+	<h1>Журнал пополнений баланса</h1><br>
+
+	<a href= "<c:url value="/adminpage"/> ">Управление балансами</a>
+	<form method="POST" action="<c:url value="/searchRegistryRecords"/>">
 		<table>
 			<tr>
 				<td>
-					Email
+					Дата с
 				</td>
 				<td>
-					<input type="text" name="searchString" value = ""/>
+					<input type="text" name="fromDate"/>
 				</td>
+				<td>
+					по
+				</td>
+				<td>
+					<input type="text" name="toDate"/>
+				</td>				
 				<td>
 					<input type="submit" value="Поиск"/>
 				</td>
@@ -36,25 +42,30 @@
 		</table>
 	</form>
 	
-	<c:if test="${!empty searchString}">
+	<c:if test="${(!empty fromDate)&&(!empty toDate)}">
 		<div>
-			Показаны результаты поиска по запросу: ${searchString} <a href= "<c:url value="/adminpage"/> "> Управление балансами</a>
+			Показаны результаты поиска по запросу: 
+				<fmt:formatDate value="${fromDate}" pattern="dd/MM/yyyy" /> - 
+				<fmt:formatDate value="${toDate}" pattern="dd/MM/yyyy" /> <a href= "<c:url value="/registryRecords"/> "> Журнал пополнений баланса</a>
 		</div> 
 	</c:if>
 	
 	<c:if test="${!empty objectList.pageList}">
 		<table class="data">
 			<tr>
-				<th>Email</th>
-				<th>Баланс</th>
-				<th>Дата регистрации</th>
+				<th>Администратор</th>
+				<th>Пользователь</th>
+				<th>Дата пополнения</th>
+				<th>Сумма пополнения</th>
 			</tr>
-			<c:forEach items="${objectList.pageList}" var="user">
+			<c:forEach items="${objectList.pageList}" var="regRecord">
 				<tr>
-					<!-- <td><a href="fillUser/${user.email}" class="userEmail">${user.email}</a></td> -->
-					<td><a href="${user.id}" class="userId">${user.email}</a></td>
-					<td id="balance-${user.id}">${user.balance}</td>
-					<td><fmt:formatDate value="${user.created}" pattern="dd/MM/yyyy" /></td>
+
+					<td>${regRecord.admin.email}</td>
+					<td>${regRecord.user.email}</td>
+					<td><fmt:formatDate value="${regRecord.regDate}" pattern="dd/MM/yyyy" /></td>
+					<td>${regRecord.amount}</td>
+
 				</tr>
 			</c:forEach>
 		</table>
@@ -89,36 +100,8 @@
   	<br>
   	<br>
   	<br>
-  	
   	<div>
   		<a href= "<c:url value="/logout"/> ">Выйти из системы</a>
-  	</div>
-  	
-  	<div id = "fillUserAccountPopUp">
-  		<div id = "fillUserAccountPopUpHead">
-  			<span>Пополнение баланса</span>
-			<a class = "fillUserAccountPopUpCloseRef" href="X">X</a>
-		</div>
-		
-		<form id = "fillUserAccount" method="GET" action = "fillUserAccount">
-	  		<table>
-	  			<tr class="userName">
-	  				<td align="right">Пользователь</td>
-	  				<td><div id = "userNameFill">UserName</div></td>  				
-	  			</tr>
-	  			<tr class="hideAfterFill">
-					<td align="right">Сумма</td>
-					<td><input type="text" id = "fillAmount"/></td>
-	  			</tr>
-				<tr class="hideAfterFill">
-					<td colspan="2" align="right">
-						<input class = "fillUserAccountPopUpCloseRef" type="button" value="Отмена" />
-						<input type="submit" value="Пополнить" />
-					</td>
-				</tr>				  			
-	  		</table>
-		</form>
-		<div id = 'fillResult'></div>
-  	</div>
+  	</div>  	
 </body>
 </html>

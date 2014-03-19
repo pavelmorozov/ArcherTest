@@ -1,7 +1,10 @@
 package dp.ua.pavelmorozov.archertest.controllers;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,107 +40,115 @@ import org.springframework.web.servlet.HandlerMapping;
 
 
 
+
+
+
+
+
+
 //import dp.ua.pavelmorozov.archertest.domain.User;
 import dp.ua.pavelmorozov.archertest.services.AdminService;
 
 @Controller
 public class AdminController {
 	@Autowired
-  private AdminService adminService;
+	private AdminService adminService;
 	
-//	@RequestMapping(value = "/test", method = RequestMethod.GET, produces = "text/html; charset=UTF-8")
-//	public @ResponseBody
-//	String test() {
-//		String str = "123";
-//		System.out.println(str);
-//		return str;
-//	}
+	/**
+	 * Searches users by string searchUser
+	 */
+	@RequestMapping("/searchUser")
+	public String searchUser(HttpServletRequest request, 
+			HttpServletResponse response,
+			Map<String, Object> map) throws Exception{
+
+		String searchUser = request.getParameter("searchString");
+		if (searchUser!=null){
+			if (!StringUtils.hasLength(searchUser)){
+				return "redirect: adminpage";
+			}
+		}
+		
+		adminService.searchUser(map, request);
+		return "balancemanagement";
+	}
+	
+	@RequestMapping("/searchRegistryRecords")
+	public String searchRegistryRecords(HttpServletRequest request, 
+			Map<String, Object> map) throws Exception{
+		
+		String fromDateStr = request.getParameter("fromDate");
+		String toDateStr = request.getParameter("toDate");
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		
+		java.util.Date fromDate = null;
+		java.util.Date toDate = null;
+		
+		if ((fromDateStr==null)&&(toDateStr==null)){
+			if (request.getSession().getAttribute("searchRegistryRecords")==null) {
+//				request.getSession().setAttribute("fromDate",null);
+//				request.getSession().setAttribute("toDate",null);
+				return "redirect: registryRecords";				
+			}
+		}else{
+			try {
+				fromDate = formatter.parse(fromDateStr);
+				toDate = formatter.parse(toDateStr);
+				request.getSession().setAttribute("fromDate",fromDate);
+				request.getSession().setAttribute("toDate",toDate);
+				System.out.println("AdminController: searchRegistryRecords. Date from param: "+formatter.format(fromDate)+" - "+formatter.format(toDate));
+			} catch (ParseException e) {
+				e.printStackTrace();
+//				request.getSession().setAttribute("fromDate",null);
+//				request.getSession().setAttribute("toDate",null);				
+				return "redirect: registryRecords";
+			}
+		}
+		
+		adminService.searchRegistryRecords(map, request, fromDate, toDate);
+		return "registryRecords";
+	}
+	
+	/**
+	 * Shows register records
+	 */
+	@RequestMapping("/registryRecords")
+	public String registryRecords(HttpServletRequest request, 
+			HttpServletResponse response,
+			Map<String, Object> map) throws Exception{
+		request.getSession().setAttribute("fromDate",null);
+		request.getSession().setAttribute("toDate",null);
+		adminService.listRegister(
+				map,
+				request);
+		return "registryRecords";
+	}
 		
 	@RequestMapping(value = "/fillUserAccount",  produces = "text/html; charset=UTF-8")
-	public 
-	@ResponseBody String fillUserAccount (
+	@ResponseBody
+	public String fillUserAccount (
 			@RequestParam(value = "account") String accountId,
 			@RequestParam(value = "amount") String amount
 			) throws Exception{
-		
-		System.out.println(" - fillUserAccount() controller method");
-		System.out.println(" - Пополнить: "+ accountId + " на сумму: " + amount);
-		
 		String balance = adminService.fillUserAccount( accountId, amount);
-		
-		System.out.println(" - Счет пополнен ");
-		
-		String response = "{\"text\":\"Пополнение на сумму: "+amount+" выполнено успешно\",\"balance\":\""+
+		String response = "{\"text\":\"Пополнение на сумму: "
+				+amount+" выполнено успешно\",\"balance\":\""+
 				balance+"\"}";
-		
 		return response;
 	}
     
 	@RequestMapping("/adminpage")
-	//@RequestMapping("/adminpage/{page}")
 	public String adminpage(HttpServletRequest request, 
 			HttpServletResponse response,
 			Map<String, Object> map) throws Exception{
 
+		adminService.listUser(
+				map,
+				request);
+
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String loginName = auth.getName();
-		
-		String pageNavy = request.getParameter("pageNavy");
-		String pageNumber = request.getParameter("pageNumber");
-		System.out.println(pageNavy);
-		
-		PagedListHolder userList = new PagedListHolder(adminService.listUser()); 
-		int pageSize = 3;
-		userList.setPageSize(pageSize);
-		//int currentPage = userList.getPage();
-		int pageCount = userList.getPageCount();
-		Integer currentPage = 0;
-		
-		if ((pageNavy==null)&&(pageNumber==null)) {
-
-		}else{
-			if (pageNavy!=null) {
-				currentPage = (Integer) request.getSession().getAttribute("currentPage");
-				if (pageNavy.equals("last")) {
-					currentPage=pageCount-1;
-				}
-				if (pageNavy.equals("first")) {
-					currentPage=0;
-				}
-				if (pageNavy.equals("prev")) {
-					currentPage = ((currentPage>0)?currentPage-1:0);
-				}		
-				if (pageNavy.equals("next")) {
-					currentPage = ((currentPage<pageCount-1)?currentPage+1:0);
-				}
-			}
-			if (pageNumber!=null) {
-				currentPage = Integer.parseInt(pageNumber)-1; 
-			}
-		}
-		
-		userList.setPage(currentPage);
-		request.getSession().setAttribute("currentPage", currentPage);		
-		
-		Integer pagesListSize = 5;
-		List<Integer> pagesList = new ArrayList <Integer>();
-		
-		Integer startPoint = currentPage - (pagesListSize-1)/2;  
-		for (Integer i = startPoint ; i < pagesListSize + startPoint ; i++)
-			{
-				if (( i >= 0 ) && ( i <= pageCount-1 )) {
-					pagesList.add(i+1);
-				}
-			}
-
-		String pagePath = request.getContextPath()+request.getServletPath();
-		//System.out.println(pagePath);
-		
-		map.put("login", loginName);
-		map.put("userList", userList);
-		map.put("pagePath", pagePath);
-		map.put("pagesList", pagesList);
-		map.put("currentPage", currentPage+1);
 		return "balancemanagement";
 	}	
 

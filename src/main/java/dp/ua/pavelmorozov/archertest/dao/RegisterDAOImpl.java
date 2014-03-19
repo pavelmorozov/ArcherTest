@@ -1,12 +1,15 @@
 package dp.ua.pavelmorozov.archertest.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 
 import dp.ua.pavelmorozov.archertest.domain.Register;
+import dp.ua.pavelmorozov.archertest.domain.User;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -29,8 +32,21 @@ public class RegisterDAOImpl implements RegisterDAO {
 
 	@Override
 	public List<Register> listRegister() throws DataAccessException {
-		return sessionFactory.getCurrentSession().createQuery("from register")
-	            .list();
+		return sessionFactory.getCurrentSession().
+				createQuery("from Register").list();
 	}
+	
+	@Override
+	public List<Register> searchRecords(Date fromDate, Date toDate)
+			throws DataAccessException{
+		List<Register> registerList = sessionFactory.getCurrentSession().
+				createCriteria(Register.class)
+				.add(Restrictions.ge("regDate", fromDate)) 
+				.add(Restrictions.lt("regDate", toDate))
+				.list();
+		
+		System.out.println("Search records: " + fromDate.toString() + " - " +toDate.toString());
+		return registerList;
+	}	
 
 }

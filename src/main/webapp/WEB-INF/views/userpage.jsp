@@ -7,11 +7,15 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>ArcherTest: ${userName}</title>
 </head>
 <body>
-	<h1>Welcome to userpage!</h1><br>
-	Account: ${userName}<br>
-	Balance: ${balance}<br>
+	<h1>${userName}, Ваш текущий баланс</h1><br>
+	<br>
+	${balance}
+	<br>
+	<br>
+	<br>
+	<a href= "<c:url value="/logout"/> ">Выйти из системы</a>
 </body>
 </html>

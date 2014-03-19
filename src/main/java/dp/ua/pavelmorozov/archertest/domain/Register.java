@@ -4,10 +4,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 //import javax.persistence.JoinColumn;
 import javax.persistence.UniqueConstraint;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -21,19 +23,19 @@ public class Register {
 	@GeneratedValue
 	private Integer id;
 	@ManyToOne(targetEntity = User.class)
-    //@JoinColumn(name="user")	
+    @JoinColumn(name="user")	
 	private User user;
 	@ManyToOne()
-    //@JoinColumn(name="admin")	
+    @JoinColumn(name="admin")	
 	private Account admin;
 	@Column(name = "amount")	
 	private BigDecimal amount;
 	@Column(name = "regdate")	
 	private Timestamp regDate;
 	
-	Register(){}
+	public Register(){}
 	
-	Register(User user, Account admin, BigDecimal amount){
+	public Register(User user, Account admin, BigDecimal amount){
 		this.user = user;
 		this.admin = admin;
 		this.amount = amount;
