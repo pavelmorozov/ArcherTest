@@ -41,10 +41,15 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public User getUser(String email) throws DataAccessException {
 		//return user by criteria
-		User user = (User) sessionFactory.getCurrentSession().
+		List userList = (List) sessionFactory.getCurrentSession().
 				createCriteria(User.class).
-				add(Restrictions.eq("email",email)).list().get(0);
-			return user;
+				add(Restrictions.eq("email",email)).list();
+
+		if (userList.isEmpty()){
+			return null;
+		}else{
+			return (User) userList.get(0);
+		}
 	}
 	
 	@Override

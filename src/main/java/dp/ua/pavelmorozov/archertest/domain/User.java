@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 //@PrimaryKeyJoinColumn(name="id") as default the same column in join condition
 @PrimaryKeyJoinColumn(name="account")
 public class User extends Account {
+	
+	private static final String USER_ROLE = "USER";
 
 	@Column(name = "balance")
 	private BigDecimal balance;
@@ -23,6 +25,7 @@ public class User extends Account {
 	public User(String email, String pass, BigDecimal balance) {
 		super.setEmail(email);
 		super.setPass(pass);
+		super.setRole(USER_ROLE);
 		this.balance=balance;
 	}	
 

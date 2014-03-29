@@ -1,11 +1,15 @@
 package dp.ua.pavelmorozov.archertest.dao;
 
+import java.util.List;
+
 import org.springframework.dao.DataAccessException;
 
 import dp.ua.pavelmorozov.archertest.domain.Account;
+import dp.ua.pavelmorozov.archertest.domain.User;
 import dp.ua.pavelmorozov.archertest.domain.Validation;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,13 +26,16 @@ public class ValidationDAOImpl implements ValidationDAO {
 
 	@Override
 	public Validation getValidation(String uuid) throws DataAccessException {
-		Validation validation = (Validation) sessionFactory.
-				getCurrentSession().load(Validation.class, uuid);
-		if (null != validation) {
-			return validation;
-		}else{
+		
+		List validationList = (List) sessionFactory.getCurrentSession().
+				createCriteria(Validation.class).
+				add(Restrictions.eq("uuid",uuid)).list();
+
+		if (validationList.isEmpty()){
 			return null;
-        }
+		}else{
+			return (Validation) validationList.get(0);
+		}		
 	}
 
 	@Override

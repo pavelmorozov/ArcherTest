@@ -62,7 +62,7 @@ public class RoleAuthenticationSuccessHandler implements
         if (isUser) {
             return "/userpage";
         } else if (isAdmin) {
-            return "/adminpage";
+            return "/adminpage/balance";
         } else {
             throw new IllegalStateException();
         }

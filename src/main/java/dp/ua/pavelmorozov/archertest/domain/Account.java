@@ -39,19 +39,10 @@ public class Account {
     private String role;
     @Column(name = "valid")    
     private Boolean valid;
-    @OneToOne(cascade = CascadeType.REMOVE)
-    /**
-     *  This property is not column in "accounts".
-     *  If account deleted, validation deleted also
-     *  Is it possible: If assign this property value NULL, then record in table "validations" will be deleted?
-     */
-    @PrimaryKeyJoinColumn 
-    /**
-     * @PrimaryKeyJoinColumn annotation does say that the primary key
-     * of the entity is used as the foreign key value to the associated
-     * entity
-     */    
-    private Validation validation;
+    //@OneToOne(cascade = CascadeType.REMOVE)
+    //@PrimaryKeyJoinColumn
+    //@JoinColumn(name="id")
+    //private Validation validation;
 	@OneToMany()
 	@JoinColumn(name="id")    
     private List<Register> regRecords;
@@ -114,13 +105,13 @@ public class Account {
 		this.valid = valid;
 	}
 
-	public Validation getValidation() {
-		return validation;
-	}
-
-	public void setValidation(Validation validation) {
-		this.validation = validation;
-	}
+//	public Validation getValidation() {
+//		return validation;
+//	}
+//
+//	public void setValidation(Validation validation) {
+//		this.validation = validation;
+//	}
 
 	public List<Register> getRegRecords() {
 		return regRecords;

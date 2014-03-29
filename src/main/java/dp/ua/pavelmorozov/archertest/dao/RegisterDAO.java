@@ -16,4 +16,6 @@ public interface RegisterDAO {
 		throws DataAccessException;
 	public List <Register> searchRecords(Date fromDate, Date toDate)
 			throws DataAccessException;
+	public Register getRegister(Integer id)
+			throws DataAccessException;
 }

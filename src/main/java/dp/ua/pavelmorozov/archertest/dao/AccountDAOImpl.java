@@ -1,6 +1,9 @@
 package dp.ua.pavelmorozov.archertest.dao;
 
+import java.util.List;
+
 import dp.ua.pavelmorozov.archertest.domain.Account;
+import dp.ua.pavelmorozov.archertest.domain.Validation;
 
 import org.springframework.dao.DataAccessException;
 import org.hibernate.SessionFactory;
@@ -28,14 +31,14 @@ public class AccountDAOImpl implements AccountDAO {
 	
 	@Override
 	public Account getAccount(String email) throws DataAccessException {
-		//return Account by ID
-		//Account account = (Account) sessionFactory.getCurrentSession().load(Account.class, 1);
-		
-		//return account by criteria
-		Account account = (Account) sessionFactory.getCurrentSession().
+		List accountList = (List) sessionFactory.getCurrentSession().
 				createCriteria(Account.class).
-				add(Restrictions.eq("email",email)).list().get(0);
-		
-		return account;
+				add(Restrictions.eq("email",email)).list();
+
+		if (accountList.isEmpty()){
+			return null;
+		}else{
+			return (Account) accountList.get(0);
+		}		
 	}
 }

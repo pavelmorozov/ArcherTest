@@ -19,8 +19,8 @@
 <body>
 	<h1>Журнал пополнений баланса</h1><br>
 
-	<a href= "<c:url value="/adminpage"/> ">Управление балансами</a>
-	<form method="POST" action="<c:url value="/searchRegistryRecords"/>">
+	<a href= "<c:url value="/adminpage/balance"/> ">Управление балансами</a>
+	<form method="POST" action="<c:url value="/adminpage/searchRegistryRecords"/>">
 		<table>
 			<tr>
 				<td>
@@ -46,7 +46,7 @@
 		<div>
 			Показаны результаты поиска по запросу: 
 				<fmt:formatDate value="${fromDate}" pattern="dd/MM/yyyy" /> - 
-				<fmt:formatDate value="${toDate}" pattern="dd/MM/yyyy" /> <a href= "<c:url value="/registryRecords"/> "> Журнал пополнений баланса</a>
+				<fmt:formatDate value="${toDate}" pattern="dd/MM/yyyy" /> <a href= "<c:url value="/adminpage/registryRecords"/> "> Журнал пополнений баланса</a>
 		</div> 
 	</c:if>
 	

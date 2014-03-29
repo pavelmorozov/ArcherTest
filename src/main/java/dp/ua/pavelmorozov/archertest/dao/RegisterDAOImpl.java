@@ -19,6 +19,12 @@ public class RegisterDAOImpl implements RegisterDAO {
 	private SessionFactory sessionFactory;
 	
 	@Override
+	public Register getRegister(Integer id)	throws DataAccessException{
+		Register register = (Register) sessionFactory.getCurrentSession().get(Register.class, id);
+		return register;
+	}	
+	
+	@Override
 	public void saveRegister(Register register) throws DataAccessException {
 		sessionFactory.getCurrentSession().save(register);
 	}

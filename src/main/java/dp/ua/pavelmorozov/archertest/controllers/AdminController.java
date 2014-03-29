@@ -54,10 +54,12 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 	
+	private static final String ADMINPAGE= "adminpage";  
+	
 	/**
 	 * Searches users by string searchUser
 	 */
-	@RequestMapping("/searchUser")
+	@RequestMapping("/" + ADMINPAGE + "/searchUser")
 	public String searchUser(HttpServletRequest request, 
 			HttpServletResponse response,
 			Map<String, Object> map) throws Exception{
@@ -65,7 +67,7 @@ public class AdminController {
 		String searchUser = request.getParameter("searchString");
 		if (searchUser!=null){
 			if (!StringUtils.hasLength(searchUser)){
-				return "redirect: adminpage";
+				return "redirect:/" + ADMINPAGE + "/balance";
 			}
 		}
 		
@@ -73,7 +75,7 @@ public class AdminController {
 		return "balancemanagement";
 	}
 	
-	@RequestMapping("/searchRegistryRecords")
+	@RequestMapping("/" + ADMINPAGE + "/searchRegistryRecords")
 	public String searchRegistryRecords(HttpServletRequest request, 
 			Map<String, Object> map) throws Exception{
 		
@@ -89,7 +91,7 @@ public class AdminController {
 			if (request.getSession().getAttribute("searchRegistryRecords")==null) {
 //				request.getSession().setAttribute("fromDate",null);
 //				request.getSession().setAttribute("toDate",null);
-				return "redirect: registryRecords";				
+				return "redirect:/" + ADMINPAGE + "/registryRecords";				
 			}
 		}else{
 			try {
@@ -102,7 +104,7 @@ public class AdminController {
 				e.printStackTrace();
 //				request.getSession().setAttribute("fromDate",null);
 //				request.getSession().setAttribute("toDate",null);				
-				return "redirect: registryRecords";
+				return "redirect:/" + ADMINPAGE + "/registryRecords";
 			}
 		}
 		
@@ -113,7 +115,7 @@ public class AdminController {
 	/**
 	 * Shows register records
 	 */
-	@RequestMapping("/registryRecords")
+	@RequestMapping("/"+ADMINPAGE+"/registryRecords")
 	public String registryRecords(HttpServletRequest request, 
 			HttpServletResponse response,
 			Map<String, Object> map) throws Exception{
@@ -125,7 +127,7 @@ public class AdminController {
 		return "registryRecords";
 	}
 		
-	@RequestMapping(value = "/fillUserAccount",  produces = "text/html; charset=UTF-8")
+	@RequestMapping(value = "/" + ADMINPAGE + "/fillUserAccount",  produces = "text/html; charset=UTF-8")
 	@ResponseBody
 	public String fillUserAccount (
 			@RequestParam(value = "account") String accountId,
@@ -138,7 +140,7 @@ public class AdminController {
 		return response;
 	}
     
-	@RequestMapping("/adminpage")
+	@RequestMapping("/"+ADMINPAGE+"/balance")
 	public String adminpage(HttpServletRequest request, 
 			HttpServletResponse response,
 			Map<String, Object> map) throws Exception{

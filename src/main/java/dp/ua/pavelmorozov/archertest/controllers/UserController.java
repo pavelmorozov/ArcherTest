@@ -24,10 +24,16 @@ public class UserController {
 	@RequestMapping("/userpage")
 	public String userpage(Map<String, Object> map){
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		String loginName = auth.getName();		
+		String loginName = auth.getName();
 		User user = userService.getUser(loginName);
-		map.put("userName", user.getEmail());
-		map.put("balance", user.getBalance());
+		if (user!=null) {
+			map.put("userName", user.getEmail());			
+			map.put("balance", user.getBalance());			
+		}else{
+			System.out.println("Only users alowed here. " + loginName + " not User");
+			map.put("userName", "Only users alowed here. " + loginName + " not User" );
+			map.put("balance", "");
+		}
 		return "userpage";
 	}
 }
