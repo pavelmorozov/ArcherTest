@@ -4,12 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.OneToOne;
-import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.JoinColumn;
@@ -17,12 +14,17 @@ import javax.persistence.JoinColumn;
 import java.sql.Timestamp;
 import java.util.List;
 
+/**
+ * Account is entity for any user role, stores login, password, role.
+ * @author P
+ *
+ */
+
 @Entity
 @Table(name = "account", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "id"),
 		@UniqueConstraint(columnNames = "email") })
 @Inheritance(strategy=InheritanceType.JOINED)
-
 public class Account {
 
     @Id
@@ -37,12 +39,6 @@ public class Account {
     private String pass;
     @Column(name = "role")    
     private String role;
-    @Column(name = "valid")    
-    private Boolean valid;
-    //@OneToOne(cascade = CascadeType.REMOVE)
-    //@PrimaryKeyJoinColumn
-    //@JoinColumn(name="id")
-    //private Validation validation;
 	@OneToMany()
 	@JoinColumn(name="id")    
     private List<Register> regRecords;
@@ -54,7 +50,6 @@ public class Account {
 		this.email = email;
 		this.pass = pass;
 		this.role = role;
-		this.valid = false; //untill validation process
 	}
 
 	public Integer getId() {
@@ -96,22 +91,6 @@ public class Account {
 	public void setRole(String role) {
 		this.role = role;
 	}
-
-	public Boolean getValid() {
-		return valid;
-	}
-
-	public void setValid(Boolean valid) {
-		this.valid = valid;
-	}
-
-//	public Validation getValidation() {
-//		return validation;
-//	}
-//
-//	public void setValidation(Validation validation) {
-//		this.validation = validation;
-//	}
 
 	public List<Register> getRegRecords() {
 		return regRecords;

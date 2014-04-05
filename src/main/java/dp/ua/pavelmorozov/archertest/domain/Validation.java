@@ -4,12 +4,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Id;
 
+/**
+ * This entity class stores info for validate guest and save it as user.
+ * On validation success object deletes. 
+ * @author P
+ *
+ */
 @Entity
 @Table(name = "validation")
 public class Validation {

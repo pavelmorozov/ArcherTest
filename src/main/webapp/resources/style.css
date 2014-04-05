@@ -27,3 +27,31 @@
 .userName{
 	display:block;
 }
+
+.search{
+	margin: 20px 0;
+}
+
+.logout{
+	margin: 20px 0;
+}
+
+.error{
+	margin: 20px 0;
+}
+
+.data{
+	border: 1px solid #999999;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th{
+	background: none repeat scroll 0 0 #DDDDDD;
+	padding: 0 20px;
+}
+
+.datacell{
+ 	 padding: 0 20px;
+ 	 border: 1px solid #999999;
+ }

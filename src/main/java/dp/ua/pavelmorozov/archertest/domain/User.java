@@ -7,10 +7,14 @@ import javax.persistence.Table;
 
 import java.math.BigDecimal;
 
+/**
+ * Subclass of Account class. Stores user balance.
+ * @author P
+ *
+ */
 
 @Entity
 @Table(name = "user")
-//@PrimaryKeyJoinColumn(name="id") as default the same column in join condition
 @PrimaryKeyJoinColumn(name="account")
 public class User extends Account {
 	

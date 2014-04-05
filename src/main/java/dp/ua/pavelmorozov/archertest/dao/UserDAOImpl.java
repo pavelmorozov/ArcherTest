@@ -4,14 +4,8 @@ import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 
-
-
-
-
-//import dp.ua.pavelmorozov.archertest.domain.Account;
 import dp.ua.pavelmorozov.archertest.domain.User;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +17,11 @@ public class UserDAOImpl implements UserDAO {
 	private SessionFactory sessionFactory;
 	
 	@Override
+	@SuppressWarnings("unchecked")	
 	public List<User> searchUser(String searchString) throws DataAccessException {
-		List<User> userList = sessionFactory.getCurrentSession().
+		List<User> userList = (List<User>) sessionFactory.getCurrentSession().
 				createCriteria(User.class).
 				add(Restrictions.ilike("email","%"+searchString+"%")).list();
-		
-		//System.out.println("%"+searchString+"%");
 		return userList;
 	}
 	
@@ -39,9 +32,10 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public User getUser(String email) throws DataAccessException {
 		//return user by criteria
-		List userList = (List) sessionFactory.getCurrentSession().
+		List <User> userList = (List <User>) sessionFactory.getCurrentSession().
 				createCriteria(User.class).
 				add(Restrictions.eq("email",email)).list();
 

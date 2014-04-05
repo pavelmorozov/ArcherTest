@@ -18,11 +18,12 @@
 <title>Archer. Управление балансами</title>
 </head>
 <body>
-	<h1>Управление балансами пользователей</h1><br>
+	<h1>Управление балансами пользователей</h1>
 	
 	<a href= "<c:url value="/adminpage/registryRecords"/> ">Журнал пополнений</a>
+	
 	<form method="POST" action="<c:url value="/adminpage/searchUser" />">
-		<table>
+		<table class="search">
 			<tr>
 				<td>
 					Email
@@ -38,7 +39,7 @@
 	</form>
 	
 	<c:if test="${!empty searchString}">
-		<div>
+		<div class = "error">
 			Показаны результаты поиска по запросу: ${searchString} <a href= "<c:url value="/adminpage/balance"/> "> Управление балансами</a>
 		</div> 
 	</c:if>
@@ -53,9 +54,9 @@
 			<c:forEach items="${objectList.pageList}" var="user">
 				<tr>
 					<!-- <td><a href="fillUser/${user.email}" class="userEmail">${user.email}</a></td> -->
-					<td><a href="${user.id}" class="userId">${user.email}</a></td>
-					<td id="balance-${user.id}">${user.balance}</td>
-					<td><fmt:formatDate value="${user.created}" pattern="dd/MM/yyyy" /></td>
+					<td class = "datacell"><a href="${user.id}" class="userId">${user.email}</a></td>
+					<td class = "datacell" id="balance-${user.id}">${user.balance}</td>
+					<td class = "datacell"><fmt:formatDate value="${user.created}" pattern="dd/MM/yyyy" /></td>
 				</tr>
 			</c:forEach>
 		</table>
@@ -87,11 +88,8 @@
 	<c:if test="${!objectList.lastPage}">
     	<a href="${pagePath}?pageNavy=last">Last &gt;&gt;</a>
   	</c:if>
-  	<br>
-  	<br>
-  	<br>
   	
-  	<div>
+  	<div class="logout">
   		<a href= "<c:url value="/logout"/> ">Выйти из системы</a>
   	</div>
   	

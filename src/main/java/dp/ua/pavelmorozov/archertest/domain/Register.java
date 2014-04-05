@@ -13,6 +13,12 @@ import javax.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+/**
+ * Every account refill store Register record
+ * It populated by user, admin, regDate ,amount
+ * @author P
+ *
+ */
 @Entity
 @Table(name = "register", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "id")})

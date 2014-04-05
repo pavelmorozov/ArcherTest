@@ -6,22 +6,23 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <jsp:useBean id="objectList" scope="request" 
    type="org.springframework.beans.support.PagedListHolder"/>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>   
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-	<link href="resources/style.css" type="text/css" rel="stylesheet">		
+	<link href="${contextPath}/resources/style.css" type="text/css" rel="stylesheet">		
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<script src="resources/script.js"></script>
+	<script src="${contextPath}/resources/script.js"></script>
 			
 <title>Archer. Журнал пополнений</title>
 </head>
 <body>
-	<h1>Журнал пополнений баланса</h1><br>
+	<h1>Журнал пополнений баланса</h1>
 
 	<a href= "<c:url value="/adminpage/balance"/> ">Управление балансами</a>
 	<form method="POST" action="<c:url value="/adminpage/searchRegistryRecords"/>">
-		<table>
+		<table class="search">
 			<tr>
 				<td>
 					Дата с
@@ -60,12 +61,10 @@
 			</tr>
 			<c:forEach items="${objectList.pageList}" var="regRecord">
 				<tr>
-
-					<td>${regRecord.admin.email}</td>
-					<td>${regRecord.user.email}</td>
-					<td><fmt:formatDate value="${regRecord.regDate}" pattern="dd/MM/yyyy" /></td>
-					<td>${regRecord.amount}</td>
-
+					<td class = "datacell">${regRecord.admin.email}</td>
+					<td class = "datacell">${regRecord.user.email}</td>
+					<td class = "datacell"><fmt:formatDate value="${regRecord.regDate}" pattern="dd/MM/yyyy" /></td>
+					<td class = "datacell">${regRecord.amount}</td>
 				</tr>
 			</c:forEach>
 		</table>
@@ -97,10 +96,8 @@
 	<c:if test="${!objectList.lastPage}">
     	<a href="${pagePath}?pageNavy=last">Last &gt;&gt;</a>
   	</c:if>
-  	<br>
-  	<br>
-  	<br>
-  	<div>
+
+  	<div class="logout">
   		<a href= "<c:url value="/logout"/> ">Выйти из системы</a>
   	</div>  	
 </body>

@@ -27,6 +27,9 @@ import dp.ua.pavelmorozov.archertest.domain.Account;
 import dp.ua.pavelmorozov.archertest.domain.User;
 import dp.ua.pavelmorozov.archertest.domain.Register;
 
+/**
+ * Implements Admin features
+ */
 @Service
 public class AdminServiceImpl implements AdminService {
 	@Autowired
@@ -36,15 +39,14 @@ public class AdminServiceImpl implements AdminService {
 	private RegisterDAO registerDAO;
 	
 	@Autowired
-	private AccountDAO accountDAO;	
+	private AccountDAO accountDAO;
 	
 	/**
-	 * Takes PagedListHolder, navigation parameters and make Map.
+	 * Takes PagedListHolder - objects for table in view, navigation parameters from HttpServletRequest and make Map.
 	 */
-	private void buildMap(PagedListHolder objectList, Map map, HttpServletRequest request){
+	private void buildMap(PagedListHolder objectList, Map <String, Object> map, HttpServletRequest request){
 		int pageSize = 10;
 		Integer pagesListSize = 5; 
-		
 		String pageNavy = request.getParameter("pageNavy");
 		String pageNumber = request.getParameter("pageNumber");
 		objectList.setPageSize(pageSize);
@@ -70,12 +72,9 @@ public class AdminServiceImpl implements AdminService {
 				currentPage = Integer.parseInt(pageNumber)-1; 
 			}
 		}
-		
 		objectList.setPage(currentPage);
 		request.getSession().setAttribute("currentPage", currentPage);		
-		
 		List<Integer> pagesList = new ArrayList <Integer>();
-		
 		Integer startPoint = currentPage - (pagesListSize-1)/2;  
 		for (Integer i = startPoint ; i < pagesListSize + startPoint ; i++)
 			{
@@ -83,83 +82,85 @@ public class AdminServiceImpl implements AdminService {
 					pagesList.add(i+1);
 				}
 			}
-
 		String pagePath = request.getContextPath()+request.getServletPath();
-		//System.out.println(pagePath);
-
 		map.put("objectList", objectList);
 		map.put("pagePath", pagePath);
 		map.put("pagesList", pagesList);
 		map.put("currentPage", currentPage+1);
 	}
 	
+	/**
+	 * Search registry in date interval, return String for controller answer.
+	 */
 	@Override
 	@Transactional
-	public void searchRegistryRecords( Map map, HttpServletRequest request, Date fromDate, Date  toDate){
-		
-//		String fromDateStr = request.getParameter("fromDate");
-//		String toDateStr = request.getParameter("toDate");
-//		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-		DateTime toDateTime = new DateTime(toDate).plusDays(1);
-		Date toDatePlus1 = toDateTime.toDate();
-
-		PagedListHolder<Register> registryRecords;
-		
-		registryRecords = (PagedListHolder) request.getSession().getAttribute("searchRegistryRecords");
-		if (registryRecords==null) {
-			registryRecords = new PagedListHolder<Register>(registerDAO.searchRecords(fromDate, toDatePlus1));
-//			request.getSession().setAttribute("fromDate", fromDate);
-//			request.getSession().setAttribute("toDate", toDate);
-			request.getSession().setAttribute("searchRegistryRecords", registryRecords);			
+	public String searchRegistryRecords(Map<String, Object> map, HttpServletRequest request){
+		String fromDateStr = request.getParameter("fromDate");
+		String toDateStr = request.getParameter("toDate");
+		java.util.Date fromDate = null;
+		java.util.Date toDate = null;
+		if ((fromDateStr!=null)&&(fromDateStr!=null)){//request parameter dates set
+			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+			try {
+				fromDate = formatter.parse(fromDateStr);
+				toDate = formatter.parse(toDateStr);
+				request.getSession().setAttribute("fromDate",fromDate);
+				request.getSession().setAttribute("toDate",toDate);
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return "redirect:/adminpage/registryRecords";
+			}
+		}else{
+			fromDate = (Date) request.getSession().getAttribute("fromDate");
+			toDate =  (Date) request.getSession().getAttribute("toDate");
 		}
-		
+		DateTime toDateTime = new DateTime(toDate).plusDays(1);
+		toDate = toDateTime.toDate();
+		PagedListHolder<Register> registryRecords = new PagedListHolder<Register>
+			(registerDAO.searchRecords(fromDate, toDate));
 		buildMap(registryRecords , map, request);
+		return "registryRecords";
 	}
 	
+	/**
+	 * Searches user by string from HttpServletRequest parameter 
+	 */
 	@Override
-	@Transactional	
-	public void searchUser( Map map, HttpServletRequest request){
+	@Transactional
+	@SuppressWarnings("unchecked")
+	public String searchUser(Map<String, Object> map, HttpServletRequest request){
 		String searchUser = request.getParameter("searchString");
-		PagedListHolder searchUserList = null;
+		PagedListHolder<User> searchUserList = null;
 		
 		if (searchUser!=null){
 			if (!StringUtils.hasLength(searchUser)){
-				PagedListHolder userList = new PagedListHolder(userDAO.listUser());
-				buildMap(userList, map,request);
+				return "redirect:/adminpage/balance";
 			} else {
-				searchUserList = new PagedListHolder(userDAO.searchUser(searchUser));
+				searchUserList = new PagedListHolder<User>(userDAO.searchUser(searchUser));
 				request.getSession().setAttribute("searchUserList", searchUserList);
 				request.getSession().setAttribute("searchString", searchUser);
 				buildMap(searchUserList , map, request);
 			}
 		}else{
-			searchUserList = (PagedListHolder) request.getSession().getAttribute("searchUserList");
+			searchUserList = (PagedListHolder<User>) request.getSession().getAttribute("searchUserList");
 			searchUser = (String) request.getSession().getAttribute("searchString");
-			//map.put("searchString", searchUser);
 			buildMap(searchUserList , map, request);
 		}
+		return "balancemanagement";
 	}
 	
 	@Override
 	@Transactional	
-	public void listRegister(Map map, HttpServletRequest request){
-		PagedListHolder registerList = new PagedListHolder(registerDAO.listRegister());
+	public void listRegister(Map<String, Object> map, HttpServletRequest request){
+		PagedListHolder<Register> registerList = new PagedListHolder<Register>(registerDAO.listRegister());
 		buildMap(registerList, map, request);
 	}
 	
 	@Override
 	@Transactional
-	public void listUser(Map map, HttpServletRequest request)
+	public void listUser(Map<String, Object> map, HttpServletRequest request)
 	{
-		PagedListHolder userList = new PagedListHolder(userDAO.listUser());
-		request.getSession().setAttribute("searchString", null);
-		//map.put("searchString", null);
-		
-//		userList.setPage(0);
-//		User u = (User) userList.getSource().get(0);
-//		String s = new SimpleDateFormat("dd/MM/yyyy").format(u.getCreated());
-//		System.out.println("Converted date: "+ s);
-		
+		PagedListHolder<User> userList = new PagedListHolder<User>(userDAO.listUser());
 		buildMap(userList, map,request);
 	}
 	

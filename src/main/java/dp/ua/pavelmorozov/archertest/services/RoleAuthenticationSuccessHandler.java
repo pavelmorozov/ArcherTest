@@ -3,7 +3,6 @@ package dp.ua.pavelmorozov.archertest.services;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -16,7 +15,6 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Service;
 
 public class RoleAuthenticationSuccessHandler implements
 		AuthenticationSuccessHandler {
@@ -40,7 +38,6 @@ public class RoleAuthenticationSuccessHandler implements
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
- 
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
  
@@ -48,6 +45,7 @@ public class RoleAuthenticationSuccessHandler implements
     protected String determineTargetUrl(Authentication authentication) {
         boolean isUser = false;
         boolean isAdmin = false;
+        boolean isGuest = false;
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (GrantedAuthority grantedAuthority : authorities) {
             if (grantedAuthority.getAuthority().equals("ROLE_USER")) {
@@ -56,13 +54,18 @@ public class RoleAuthenticationSuccessHandler implements
             } else if (grantedAuthority.getAuthority().equals("ROLE_ADMIN")) {
                 isAdmin = true;
                 break;
-            }
+	        } else if (grantedAuthority.getAuthority().equals("ROLE_GUEST")) {
+	            isGuest = true;
+	            break;
+	        }
         }
  
         if (isUser) {
             return "/userpage";
         } else if (isAdmin) {
             return "/adminpage/balance";
+        } else if (isGuest) {
+        	return "/guestpage";
         } else {
             throw new IllegalStateException();
         }
@@ -82,11 +85,4 @@ public class RoleAuthenticationSuccessHandler implements
     protected RedirectStrategy getRedirectStrategy() {
         return redirectStrategy;
     }    
-
-//	@Override
-//	public void onAuthenticationSuccess(HttpServletRequest request,
-//			HttpServletResponse response, Authentication authentication)
-//			throws IOException, ServletException {
-//	}
-
 }

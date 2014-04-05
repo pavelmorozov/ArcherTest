@@ -6,9 +6,7 @@ import dp.ua.pavelmorozov.archertest.domain.Account;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -18,8 +16,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
+/**
+ * Spring security authorization throw database
+ *
+ */
 @Service
 public class DAOUserDetailsService implements UserDetailsService{
 	
@@ -30,31 +30,16 @@ public class DAOUserDetailsService implements UserDetailsService{
 	@Transactional
 	public UserDetails loadUserByUsername(String login)
 	throws UsernameNotFoundException {
-		
-		System.out.println("Getting access details for: "+ login 
-				+ ", from DAOUserDetailsService");
-		
 		Account account = accountDAO.getAccount(login); 
-		
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		
 		if (account.getRole().equals("USER")) {
-				authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		}else if (account.getRole().equals("ADMIN")) {
-				authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-				authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+			authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}else if (account.getRole().equals("GUEST")) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_GUEST"));
 		}
-		
-		
-		//List<String> roles = new ArrayList<String>();
-		//roles.add("ROLE_USER");
-		//roles.add("ROLE_ADMIN");
-		
-//		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-//		
-//		authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-//		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-//		
 		return new User(
 				account.getEmail(),
 				account.getPass(),

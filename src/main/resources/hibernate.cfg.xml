@@ -9,7 +9,5 @@
 		<mapping class="dp.ua.pavelmorozov.archertest.domain.Register" />
 		<mapping class="dp.ua.pavelmorozov.archertest.domain.User" />		
 		<mapping class="dp.ua.pavelmorozov.archertest.domain.Validation" />
-		
-		<!-- <mapping class="dp.ua.pavelmorozov.archertest.domain.*" /> -->
 	</session-factory>
 </hibernate-configuration>

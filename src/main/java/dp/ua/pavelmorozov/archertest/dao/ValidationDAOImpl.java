@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 
-import dp.ua.pavelmorozov.archertest.domain.Account;
-import dp.ua.pavelmorozov.archertest.domain.User;
 import dp.ua.pavelmorozov.archertest.domain.Validation;
 
 import org.hibernate.SessionFactory;
@@ -25,9 +23,9 @@ public class ValidationDAOImpl implements ValidationDAO {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Validation getValidation(String uuid) throws DataAccessException {
-		
-		List validationList = (List) sessionFactory.getCurrentSession().
+		List<Validation> validationList = (List<Validation>) sessionFactory.getCurrentSession().
 				createCriteria(Validation.class).
 				add(Restrictions.eq("uuid",uuid)).list();
 

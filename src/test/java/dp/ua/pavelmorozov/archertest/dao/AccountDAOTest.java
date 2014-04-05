@@ -38,7 +38,7 @@ public class AccountDAOTest {
 	}
 	
 	@Test
-	@Ignore
+	//@Ignore
 	@Transactional
 	public void accountDAORemoveAccount() {
 		Account account = new Account(ACCOUNT_EMAIL,
